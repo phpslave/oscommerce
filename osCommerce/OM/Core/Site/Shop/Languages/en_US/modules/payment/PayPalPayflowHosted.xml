@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<language>
+  <definitions>
+    <definition>
+      <key>paypal_payflow_hosted_title</key>
+      <value><![CDATA[PayPal Payflow Hosted]]></value>
+      <group>modules-payment</group>
+    </definition>
+    <definition>
+      <key>paypal_payflow_hosted_description</key>
+      <value><![CDATA[PayPal Payflow Hosted]]></value>
+      <group>modules-payment</group>
+    </definition>
+    <definition>
+      <key>paypal_payflow_hosted_method_title</key>
+      <value><![CDATA[PayPal Payflow Hosted]]></value>
+      <group>modules-payment</group>
+    </definition>
+  </definitions>
+</language>

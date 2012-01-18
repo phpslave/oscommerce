@@ -197,6 +197,7 @@
 <div class="submitFormButtons" style="text-align: right;">
 
 <?php
+
   if ( $OSCOM_ShoppingCart->hasBillingMethod() && $OSCOM_PaymentModule->hasGateway() ) {
     $form_action_url = $OSCOM_PaymentModule->getGatewayURL();
   } else {

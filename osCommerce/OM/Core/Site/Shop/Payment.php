@@ -33,7 +33,7 @@
     public function loadAll() {
       foreach ( $this->_modules as $module ) {
         $module_class = 'osCommerce\\OM\\Core\\Site\\Shop\\Module\\Payment\\' . $module;
-
+        $obj = new $module_class();
         Registry::set('Payment_' . $module, new $module_class(), true);
       }
 
