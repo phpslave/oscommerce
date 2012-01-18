@@ -65,8 +65,6 @@
     	$OSCOM_Tax = Registry::get('Tax');
     	$Qaccount = Account::getEntry();
     	$custEmail = $Qaccount->value('customers_email_address');
-    	print $OSCOM_ShoppingCart->getTotal();
-		var_dump($OSCOM_ShoppingCart);
       	// sale
       	$trxType = 'S'; 
       	$nvpStr = 'USER=' . MODULE_PAYMENT_PAYPAL_PAYFLOW_HOSTED_USER
@@ -96,8 +94,10 @@
 	  	$this->token = $this->getToken($nvpStr);
 	  	$_SESSION['tk']['SECURETOKEN'] = $this->SECURETOKEN;
 	  	$_SESSION['tk']['SECURETOKENID'] = $this->SECURETOKENID;
+	  	// set the iframe
+	  	$this->iframe='paypal_payflow_HS.php?mode=live&SECURETOKEN='.$this->SECURETOKEN.'&SECURETOKENID='.$this->SECURETOKENID;
 	  	// return
-	  	return true;
+	  	return;
     }
 	
     private function getToken($apiStr){
@@ -106,7 +106,44 @@
     	} else {
     		$api_url = 'https://pilot-payflowpro.paypal.com';
     	}   
-    	 	
+    	$this->SECURETOKEN = md5(trim(time() . date('l jS \of F Y h:i:s A')));
+    	$params = array(
+    			'SECURETOKENID' => $this->SECURETOKEN,
+    			'CREATESECURETOKEN' => 'Y'
+    	);
+    	$apiStr .= '&';
+    	foreach ($params as $key => $value){
+    		$apiStr .= $key .'='.$value.'&';
+    	}
+    	$apiStr = substr($apiStr, 0, strlen($apiStr)-1);
+    	// setting the curl parameters.
+    	$ch = curl_init();
+    	curl_setopt($ch, CURLOPT_URL, $api_url);
+    	curl_setopt($ch, CURLOPT_VERBOSE, 1);
+    	
+    	// turning off the server and peer verification(TrustManager Concept).
+    	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+    	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+    	
+    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    	curl_setopt($ch, CURLOPT_POST, 1);
+    	
+    	// setting the NVP $my_api_str as POST FIELD to curl
+    	curl_setopt($ch, CURLOPT_POSTFIELDS, $apiStr);
+    	
+    	// getting response from server
+    	$httpResponse = curl_exec($ch);
+
+    	$respArr = explode('&',trim($httpResponse));
+    	foreach ($respArr as $line){
+    		list($key, $value) = explode('=', $line);
+    		if(in_array($key, array('SECURETOKENID','SECURETOKEN'))){
+    			$this->$key = $value;
+    		}
+    	}
+    	
+    	return $httpResponse;
+    	 
     }
     
     public function process() {

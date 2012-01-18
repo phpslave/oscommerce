@@ -192,12 +192,20 @@
 
 <?php
   }
-?>
 
-<div class="submitFormButtons" style="text-align: right;">
-
-<?php
-
+$billingArr = $OSCOM_ShoppingCart->getBillingMethod();
+$paypalHHS = false;
+if(is_array($billingArr) and array_key_exists('id', $billingArr)){
+	if($billingArr['id'] == 'PayPalPayflowHosted'){
+		$paypalHHS = true;
+	}
+}
+if(!$paypalHHS){
+	?>
+	
+	<div class="submitFormButtons" style="text-align: right;">
+	
+	<?php
   if ( $OSCOM_ShoppingCart->hasBillingMethod() && $OSCOM_PaymentModule->hasGateway() ) {
     $form_action_url = $OSCOM_PaymentModule->getGatewayURL();
   } else {
@@ -211,6 +219,17 @@
   }
 
   echo HTML::button(array('icon' => 'triangle-1-e', 'title' => OSCOM::getDef('button_confirm_order'))) . '</form>';
+  
+}else{
+	// paypal HHS
+	?>
+		
+		<div class="submitFormButtons" style="text-align: center;">
+		
+		<?php	
+	print '<iFrame width="490"  height="565" src="' . $OSCOM_PaymentModule->iframe .'" frameborder="0" scrolling="no"></iFrame>';
+	
+}
 ?>
 
 </div>
